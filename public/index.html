@@ -1,0 +1,98 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>5-User Chat App</title>
+</head>
+<body>
+  <h2>Join the Chat</h2>
+  <input id="roomId" placeholder="Room ID" />
+  <button onclick="joinRoom()">Join</button>
+
+  <div id="chatArea" style="margin-top: 20px;">
+    <input id="messageInput" placeholder="Type message..." />
+    <button onclick="sendMessage()">Send</button>
+    <ul id="messages"></ul>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let currentRoom = null;
+
+    function joinRoom() {
+      currentRoom = document.getElementById("roomId").value.trim();
+      if (currentRoom) socket.emit("joinRoom", currentRoom);
+    }
+
+    function sendMessage() {
+      const msg = document.getElementById("messageInput").value.trim();
+      if (currentRoom && msg) {
+        socket.emit("sendMessage", { roomId: currentRoom, message: msg });
+        document.getElementById("messageInput").value = "";
+      }
+    }
+
+    socket.on("receiveMessage", ({ userId, message }) => {
+      const li = document.createElement("li");
+      li.textContent = `${userId}: ${message}`;
+      document.getElementById("messages").appendChild(li);
+    });
+  </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>5-User Chat App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="chat-container">
+    <h2>Join the Chat</h2>
+    <input id="roomId" placeholder="Enter Room ID" />
+    <button onclick="joinRoom()">Join Room</button>
+
+    <div id="chatArea" style="display:none; margin-top: 20px;">
+      <div id="messages-box"></div>
+      <input id="messageInput" placeholder="Type a message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let currentRoom = null;
+
+    function joinRoom() {
+      currentRoom = document.getElementById("roomId").value.trim();
+      if (currentRoom) {
+        socket.emit("joinRoom", currentRoom);
+        document.getElementById("chatArea").style.display = 'block';  // Show the chat area
+      }
+    }
+
+    function sendMessage() {
+      const msg = document.getElementById("messageInput").value.trim();
+      if (currentRoom && msg) {
+        socket.emit("sendMessage", { roomId: currentRoom, message: msg });
+        document.getElementById("messageInput").value = "";
+      }
+    }
+
+    socket.on("receiveMessage", ({ userId, message }) => {
+      const messagesBox = document.getElementById("messages-box");
+      const li = document.createElement("div");
+      li.classList.add("message");
+      li.innerHTML = `<strong>${userId}:</strong> ${message}`;
+      messagesBox.appendChild(li);
+
+      // Auto scroll to the bottom of the message box
+      messagesBox.scrollTop = messagesBox.scrollHeight;
+    });
+  </script>
+</body>
+</html>
